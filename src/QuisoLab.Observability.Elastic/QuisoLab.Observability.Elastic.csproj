@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+
+        <!-- Pacote NuGet -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.0.0</Version>
+        <PackageId>QuisoLab.Observability.Elastic</PackageId>
+        <Title>QuisoLab.Observability.Elastic</Title>
+        <Authors>inocencio.cardoso</Authors>
+        <Company>QuisoLab</Company>
+        <Description>Biblioteca de observabilidade para integração com Elastic APM em APIs e serviços</Description>
+        <PackageTags>Elastic;APM;Observability;Tracing;QuisoLab;Monitoring</PackageTags>
+        <RepositoryUrl>https://github.com/QuisoLab/QuisoLab.Observability.Elastic</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Copyright>© QuisoLab 2026</Copyright>
+
+        <!-- Para build e empacotamento internos -->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.32.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.17" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.17" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Text.Json" Version="8.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.9" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    </ItemGroup>
+
+</Project>
