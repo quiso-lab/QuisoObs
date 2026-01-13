@@ -15,6 +15,7 @@ Biblioteca .NET para integração simplificada com Elastic APM, fornecendo obser
 
 - 🎯 **API simplificada** para gerenciamento de transações e spans
 - 🔄 **Captura automática** de requisições HTTP via middleware
+- 🔄 **Captura personalizada** para mensageria
 - 🏷️ **Conversão automática** de objetos em labels para contexto rico
 - ⚙️ **Configuração flexível** via appsettings.json ou código
 - 🛡️ **Tratamento robusto** de erros e validações
