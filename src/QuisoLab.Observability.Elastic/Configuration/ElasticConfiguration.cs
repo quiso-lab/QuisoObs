@@ -79,12 +79,12 @@ public class ElasticConfiguration
     /// <summary>
     ///     Metadados globais para todas as transações.
     /// </summary>
-    public Dictionary<string, string> GlobalLabels { get; set; } = new();
+    public Dictionary<string, string> GlobalLabels { get; set; } = [];
 
     /// <summary>
     ///     Lista de URLs a serem ignoradas pelo APM.
     /// </summary>
-    public List<string> IgnoreUrls { get; set; } = new();
+    public List<string> IgnoreUrls { get; set; } = [];
 
     /// <summary>
     ///     Se deve capturar SQL statements.
@@ -99,22 +99,8 @@ public class ElasticConfiguration
     /// <summary>
     ///     Lista de campos a serem sanitizados.
     /// </summary>
-    public List<string> SanitizeFields { get; set; } = new()
-    {
+    public List<string> SanitizeFields { get; set; } =
+    [
         "password", "passwd", "pwd", "secret", "key", "token", "authorization", "cookie"
-    };
-}
-
-/// <summary>
-///     Níveis de log para o Elastic APM.
-///     </summary>
-public enum LogLevel
-{
-    Trace,
-    Debug,
-    Information,
-    Warning,
-    Error,
-    Critical,
-    None
+    ];
 }

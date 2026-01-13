@@ -1,8 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using QuisoLab.Observability.Elastic.Configuration;
 using Microsoft.Extensions.Logging;
+using QuisoLab.Observability.Elastic.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace QuisoLab.Observability.Elastic;
 
@@ -32,17 +32,15 @@ public static class Startup
     /// <param name="configuration">Configuração da aplicação.</param>
     /// <param name="sectionName">Nome da seção de configuração (padrão: "ElasticApm").</param>
     public static IServiceCollection ConfigureElasticServices(
-        this IServiceCollection services, 
-        IConfiguration configuration, 
-        string sectionName = "ElasticApm")
+        this IServiceCollection services, IConfiguration configuration, string sectionName = "ElasticApm")
     {
         // Registra a configuração
         services.Configure<ElasticConfiguration>(configuration.GetSection(sectionName));
-        
+
         // Registra os serviços
         services.AddAllElasticApm();
         services.AddScoped<IElasticTransaction, ElasticTransaction>();
-        
+
         return services;
     }
 
@@ -52,16 +50,14 @@ public static class Startup
     /// <param name="services">Instância de <see cref="IServiceCollection" /> da aplicação.</param>
     /// <param name="configureOptions">Delegate para configuração.</param>
     public static IServiceCollection ConfigureElasticServices(
-        this IServiceCollection services,
-        Action<ElasticConfiguration> configureOptions)
+        this IServiceCollection services, Action<ElasticConfiguration> configureOptions)
     {
-        if (configureOptions == null)
-            throw new ArgumentNullException(nameof(configureOptions));
+        ArgumentNullException.ThrowIfNull(configureOptions);
 
         services.Configure(configureOptions);
         services.AddAllElasticApm();
         services.AddScoped<IElasticTransaction, ElasticTransaction>();
-        
+
         return services;
     }
 
@@ -92,8 +88,8 @@ public static class Startup
             isValid = false;
         }
 
-        if (string.IsNullOrWhiteSpace(configuration.ServerUrl) && 
-            string.IsNullOrWhiteSpace(configuration.SecretToken) && 
+        if (string.IsNullOrWhiteSpace(configuration.ServerUrl) &&
+            string.IsNullOrWhiteSpace(configuration.SecretToken) &&
             string.IsNullOrWhiteSpace(configuration.ApiKey))
         {
             logger?.LogWarning("ElasticConfiguration does not have ServerUrl, SecretToken, or ApiKey configured. APM may not work properly.");

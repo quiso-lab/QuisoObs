@@ -1,114 +1,93 @@
 # QuisoLab.Observability.Elastic
 
-Biblioteca .NET de observabilidade para gerenciamento centralizado de transações com Elastic APM, projetada para aplicações distribuídas da QuisoLab.
+Biblioteca .NET para integração simplificada com Elastic APM, fornecendo observabilidade completa para aplicações ASP.NET Core com captura automática de transações, spans, exceções e contexto distribuído.
 
-## 🚀 Funcionalidades
+## 📖 Sobre o Projeto
 
-### ✅ Implementações Realizadas
-- ✅ **Mensagens de log detalhadas** quando labels são null ou vazios
-- ✅ **Validação robusta de parâmetros** em todos os métodos
-- ✅ **Tratamento de exceções aprimorado** com captura automática
-- ✅ **Middleware ASP.NET Core** para captura automática de transações HTTP
-- ✅ **Sistema de configuração flexível** com validação
-- ✅ **Métodos adicionais** para melhor usabilidade
-- ✅ **EntityExtensions melhorado** com tratamento de erros e performance otimizada
+**QuisoLab.Observability.Elastic** é uma abstração sobre o Elastic APM .NET Agent que simplifica a instrumentação de aplicações, oferecendo:
 
-### 🔧 Principais Melhorias
+- 🎯 **API simplificada** para gerenciamento de transações e spans
+- 🔄 **Captura automática** de requisições HTTP via middleware
+- 🏷️ **Conversão automática** de objetos em labels para contexto rico
+- ⚙️ **Configuração flexível** via appsettings.json ou código
+- 🛡️ **Tratamento robusto** de erros e validações
 
-#### 1. **Logging e Debugging Aprimorado**
-```csharp
-// Agora quando labels é null/vazio, você verá logs detalhados:
-_elasticTransaction.AddMessagePayloadToTransaction(null, "messaging");
-// Resultado: Labels com warning_reason, warning_method, warning_transaction_type
-// + Exceção capturada com detalhes completos do contexto
-```
+Ideal para times que precisam de observabilidade profunda sem complexidade excessiva.
 
-#### 2. **Validações Robustas**
-```csharp
-// Validação de parâmetros em todos os métodos
-_elasticTransaction.CaptureSpan("", null, () => { }); 
-// Captura exceções ArgumentException com mensagens específicas
+## ✨ Funcionalidades Principais
 
-_elasticTransaction.AddLabel("", "value");
-// Valida e sanitiza todas as entradas
-```
+### 🔍 Rastreamento de Transações
+- Início e fim automático de transações HTTP
+- Suporte a transações manuais para processos de negócio
+- Labels customizáveis para contexto de negócio
+- Captura automática de exceções
 
-#### 3. **Middleware Automático para ASP.NET Core**
-```csharp
-// No Startup.cs ou Program.cs
-services.ConfigureElasticServices(configuration);
-app.UseElasticTransaction(); // Captura automática de todas as requisições HTTP
-```
+### 📊 Spans e Contexto
+- Criação de spans para operações específicas
+- Contexto customizado para análise detalhada
+- Suporte a tracing distribuído
+- Extração automática de propriedades como labels
 
-#### 4. **Configuração Flexível**
-```csharp
-// Via appsettings.json
-services.ConfigureElasticServices(configuration, "ElasticApm");
-
-// Via delegate
-services.ConfigureElasticServices(config => {
-    config.ServiceName = "MinhaAPI";
-    config.Environment = "production";
-    config.TransactionSampleRate = 0.1;
-});
-
-// Validação de configuração
-Startup.ValidateElasticConfiguration(config, logger);
-```
-
-#### 5. **Novos Métodos Úteis**
-```csharp
-// Múltiplos labels de uma vez
-_elasticTransaction.AddLabels(new Dictionary<string, string> {
-    ["user_id"] = "123",
-    ["tenant"] = "acme"
-});
-
-// Contexto customizado
-_elasticTransaction.SetCustomContext("business_context", businessData);
-
-// Resultado da transação
-_elasticTransaction.SetTransactionResult("success");
-
-// Verificações de estado
-if (_elasticTransaction.HasActiveTransaction()) { }
-```
-
-#### 6. **EntityExtensions Melhorado**
-```csharp
-// Com prefixo
-var labels = order.SetLabelsWithPrefix("order");
-
-// Propriedades específicas
-var labels = user.SetLabelsForProperties("Name", "Email", "Role");
-
-// Tratamento robusto de erros e tipos complexos
-var labels = complexObject.SetLabels(); // Funciona com listas, objetos aninhados, etc.
-```
+### 🔧 Configuração e Extensibilidade
+- Configuração via appsettings.json ou código
+- Validação de configurações em tempo de execução
+- Extensões para conversão de entidades em labels
+- Middleware ASP.NET Core integrado
 
 ## 📦 Instalação
 
+### Via NuGet
 ```bash
 dotnet add package QuisoLab.Observability.Elastic
 ```
 
-## 🔧 Configuração Básica
-
-### 1. **Configuração Simples**
-```csharp
-// Program.cs ou Startup.cs
-services.ConfigureElasticServices();
+### Via Projeto Local
+1. Clone o repositório:
+```bash
+git clone https://github.com/quiso-lab/QuisoObs.git
 ```
 
-### 2. **Configuração com appsettings.json**
+2. Referencie o projeto em sua aplicação:
+```xml
+<ItemGroup>
+  <ProjectReference Include="..\QuisoObs\src\QuisoLab.Observability.Elastic\QuisoLab.Observability.Elastic.csproj" />
+</ItemGroup>
+```
+
+## 🚀 Primeiros Passos
+
+### 1. Configuração Básica
+
+Adicione no `Program.cs`:
+
+```csharp
+using QuisoLab.Observability.Elastic;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Registra os serviços do Elastic APM
+builder.Services.ConfigureElasticServices(builder.Configuration);
+
+var app = builder.Build();
+
+// Adiciona o middleware (deve vir antes de outros middlewares)
+app.UseElasticMiddleware();
+
+app.UseRouting();
+app.MapControllers();
+app.Run();
+```
+
+### 2. Configuração via appsettings.json
+
 ```json
 {
   "ElasticApm": {
     "ServiceName": "minha-api",
     "ServiceVersion": "1.0.0",
     "Environment": "production",
-    "ServerUrl": "http://elastic-apm:8200",
-    "SecretToken": "seu-token",
+    "ServerUrl": "http://elastic-apm-server:8200",
+    "SecretToken": "seu-token-secreto",
     "TransactionSampleRate": 1.0,
     "CaptureHeaders": true,
     "GlobalLabels": {
@@ -119,166 +98,234 @@ services.ConfigureElasticServices();
 }
 ```
 
+### 3. Configuração Programática (Opcional)
+
 ```csharp
-services.ConfigureElasticServices(configuration);
+builder.Services.ConfigureElasticServices(config =>
+{
+    config.ServiceName = "MinhaAPI";
+    config.Environment = "production";
+    config.ServerUrl = "http://elastic-apm:8200";
+    config.TransactionSampleRate = 0.5;
+});
 ```
 
-### 3. **Configuração com Middleware (Recomendado para APIs)**
-```csharp
-// Program.cs
-services.ConfigureElasticServices(configuration);
+## 💻 Como Usar
 
-// No pipeline de middleware
-app.UseElasticTransaction(); // Adicionar antes de outros middlewares
-app.UseRouting();
-app.UseAuthentication();
-// ...
+### Exemplo Básico - Controller com Middleware
+
+Quando você usa o middleware, transações HTTP são criadas automaticamente:
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
+{
+    private readonly IElasticTransaction _elasticTransaction;
+    private readonly IOrderService _orderService;
+
+    public OrdersController(IElasticTransaction elasticTransaction, IOrderService orderService)
+    {
+        _elasticTransaction = elasticTransaction;
+        _orderService = orderService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateOrder(CreateOrderRequest request)
+    {
+        // Adiciona contexto adicional à transação HTTP automática
+        _elasticTransaction.AddLabel("customer_id", request.CustomerId);
+        
+        // Cria span para operação de negócio
+        var order = await _elasticTransaction.CaptureSpan(
+            "ProcessOrder",
+            null,
+            async () => await _orderService.ProcessOrderAsync(request)
+        );
+
+        return Ok(order);
+    }
+}
 ```
 
-## 💻 Uso
+### Exemplo Avançado - Transação Manual com Spans
 
-### **Injeção de Dependência**
 ```csharp
 public class OrderService
 {
     private readonly IElasticTransaction _elasticTransaction;
+    private readonly IRepository<Order> _repository;
 
-    public OrderService(IElasticTransaction elasticTransaction)
+    public OrderService(IElasticTransaction elasticTransaction, IRepository<Order> repository)
     {
         _elasticTransaction = elasticTransaction;
+        _repository = repository;
     }
-}
-```
 
-### **Exemplo Completo com Melhorias**
-```csharp
-public async Task<Order> ProcessOrderAsync(CreateOrderRequest request)
-{
-    try
+    public async Task<Order> ProcessOrderAsync(CreateOrderRequest request)
     {
-        // Inicia transação manual (se não usando middleware)
-        _elasticTransaction.StartTransaction("ProcessOrder", null, "business");
-        
-        // Labels do contexto
-        var contextLabels = new Dictionary<string, string>
+        try
         {
-            ["user_id"] = request.UserId,
-            ["order_type"] = request.Type,
-            ["total_amount"] = request.TotalAmount.ToString("F2")
-        };
-        _elasticTransaction.AddLabels(contextLabels);
+            // Inicia transação manual para processos de negócio
+            _elasticTransaction.StartTransaction("ProcessOrder", null, "business");
+            
+            // Adiciona contexto
+            _elasticTransaction.AddLabels(new Dictionary<string, string>
+            {
+                ["user_id"] = request.UserId,
+                ["order_type"] = request.Type,
+                ["total_amount"] = request.TotalAmount.ToString("F2")
+            });
 
-        // Span para validação
-        await _elasticTransaction.CaptureSpan("ValidateOrder", 
-            request.SetLabelsWithPrefix("request"), 
-            async () => await ValidateOrderAsync(request));
+            // Span para validação
+            await _elasticTransaction.CaptureSpan("ValidateOrder", 
+                request.SetLabelsWithPrefix("request"), 
+                async () => await ValidateOrderAsync(request));
 
-        // Span para processamento
-        var order = await _elasticTransaction.CaptureSpan("CreateOrder",
-            new Dictionary<string, string> { ["step"] = "creation" },
-            async () => await CreateOrderInDatabaseAsync(request));
+            // Span para persistência
+            var order = await _elasticTransaction.CaptureSpan("SaveOrder",
+                null,
+                async () => await _repository.SaveAsync(request));
 
-        // Labels do resultado
-        _elasticTransaction.AddLabels(order.SetLabelsWithPrefix("order"));
-        _elasticTransaction.SetTransactionResult("success");
-        _elasticTransaction.SetCustomContext("order_result", new { 
-            OrderId = order.Id, 
-            Status = order.Status 
-        });
+            // Adiciona resultado
+            _elasticTransaction.SetTransactionResult("success");
+            _elasticTransaction.AddLabels(order.SetLabels());
 
-        return order;
+            return order;
+        }
+        catch (Exception ex)
+        {
+            _elasticTransaction.CaptureException(ex);
+            _elasticTransaction.SetTransactionResult("error");
+            throw;
+        }
+        finally
+        {
+            _elasticTransaction.EndTransaction();
+        }
     }
-    catch (Exception ex)
+
+    private async Task ValidateOrderAsync(CreateOrderRequest request)
     {
-        _elasticTransaction.CaptureException(ex);
-        _elasticTransaction.SetTransactionResult("error");
-        _elasticTransaction.AddLabel("error_category", GetErrorCategory(ex));
-        throw;
-    }
-    finally
-    {
-        _elasticTransaction.EndTransaction();
+        // Lógica de validação
+        if (request.TotalAmount <= 0)
+            throw new ValidationException("Invalid amount");
     }
 }
 ```
 
-## 🛠️ Melhorias de Robustez Implementadas
+### Extensões de Entidades - Conversão Automática para Labels
 
-### **1. Tratamento de Erros**
-- ✅ Validação de parâmetros nulos/vazios em todos os métodos
-- ✅ Sanitização automática de strings (trim, null safety)
-- ✅ Captura automática de exceções internas
-- ✅ Logs detalhados para debugging
-- ✅ Fallback para transações padrão em caso de erro
-
-### **2. Performance**
-- ✅ Verificação otimizada de tipos primitivos
-- ✅ Uso de BindingFlags para melhor performance de reflection
-- ✅ Serialização JSON configurada para performance
-- ✅ Reutilização de transações existentes quando possível
-
-### **3. Usabilidade**
-- ✅ Métodos com validação de entrada consistente
-- ✅ Labels de warning automáticos para debugging
-- ✅ Métodos helper para casos comuns
-- ✅ Configuração flexível com múltiplas opções
-
-### **4. Observabilidade**
-- ✅ Labels automáticos para HTTP requests (método, URL, status, etc.)
-- ✅ Contexto de erro detalhado
-- ✅ Tracing distribuído automático
-- ✅ Metadados de performance (tempo de resposta, etc.)
-
-## 🔍 Debugging e Troubleshooting
-
-### **Logs de Warning Automáticos**
-Quando você chamar `AddMessagePayloadToTransaction` com labels null/vazios:
-
-```
-Labels dictionary is null - Transaction: ProcessOrder, Type: messaging
-```
-
-Os seguintes labels de warning serão adicionados automaticamente:
-- `warning_reason`: "Labels dictionary is null" ou "Labels dictionary is empty"
-- `warning_method`: "AddMessagePayloadToTransaction"
-- `warning_transaction_type`: Tipo da transação
-
-### **Validação de Configuração**
 ```csharp
-var config = configuration.GetSection("ElasticApm").Get<ElasticConfiguration>();
-if (!Startup.ValidateElasticConfiguration(config, logger))
-{
-    // Configuração inválida - verifique os logs
-}
+// Converte todas as propriedades automaticamente
+var labels = order.SetLabels();
+_elasticTransaction.AddLabels(labels);
+
+// Com prefixo para organização
+var customerLabels = customer.SetLabelsWithPrefix("customer");
+// Resulta em: customer_Name, customer_Email, customer_Age, etc.
+
+// Apenas propriedades específicas
+var userLabels = user.SetLabelsForProperties("Name", "Email", "Role");
+_elasticTransaction.AddLabels(userLabels);
 ```
 
-## 📋 Próximas Melhorias Sugeridas
+## 📚 API de Métodos Disponíveis
 
-1. **Métricas Customizadas**: Adicionar suporte a métricas além de transações
-2. **Rate Limiting**: Implementar rate limiting inteligente para high-volume
-3. **Batching**: Agrupamento de labels para reduzir overhead
-4. **Health Checks**: Verificação automática de conectividade com Elastic
-5. **Circuit Breaker**: Proteção contra falhas do Elastic APM
-6. **Async Context**: Melhor suporte para contexto assíncrono
-7. **Correlation IDs**: Geração automática de IDs de correlação
-8. **Sampling Strategies**: Estratégias de amostragem mais sofisticadas
+| Método | Descrição | Exemplo |
+|--------|-----------|---------|
+| `StartTransaction(name, tracingData, type)` | Inicia uma nova transação | `StartTransaction("ProcessOrder", null, "business")` |
+| `EndTransaction()` | Finaliza a transação atual | `EndTransaction()` |
+| `AddLabel(key, value)` | Adiciona um label individual | `AddLabel("user_id", "123")` |
+| `AddLabels(dictionary)` | Adiciona múltiplos labels | `AddLabels(new Dictionary<string, string> {...})` |
+| `CaptureSpan(name, labels, action)` | Cria e captura um span | `CaptureSpan("DbQuery", null, async () => {...})` |
+| `CaptureException(exception)` | Captura uma exceção | `CaptureException(ex)` |
+| `SetTransactionResult(result)` | Define resultado (success/error) | `SetTransactionResult("success")` |
+| `SetCustomContext(key, value)` | Adiciona contexto customizado | `SetCustomContext("business_data", data)` |
+| `HasActiveTransaction()` | Verifica se há transação ativa | `if (HasActiveTransaction()) {...}` |
 
-## 📚 Documentação Adicional
+## 🏗️ Estrutura do Projeto
 
-- [Elastic APM .NET Agent](https://www.elastic.co/guide/en/apm/agent/dotnet/current/index.html)
-- [Configuração Avançada](./docs/advanced-configuration.md)
-- [Exemplos de Uso](./docs/examples.md)
-- [Troubleshooting](./docs/troubleshooting.md)
+```
+QuisoLab.Observability.Elastic/
+├── Configuration/
+│   └── ElasticConfiguration.cs          # Configurações do Elastic APM
+├── Extensions/
+│   └── EntityExtensions.cs              # Extensões para conversão de objetos
+├── Middleware/
+│   ├── ElasticTransactionMiddleware.cs  # Middleware de captura automática
+│   └── ElasticMiddlewareExtensions.cs   # Extensões do middleware
+├── ElasticTransaction.cs                # Implementação principal
+├── IElasticTransaction.cs               # Interface pública
+└── Startup.cs                           # Configuração de serviços
+```
 
-## 🤝 Contribuição
+## 🤝 Como Contribuir
 
-Para contribuir com melhorias:
+Contribuições são bem-vindas! Siga estas etapas:
 
-1. Fork o repositório
-2. Crie uma branch para sua feature
-3. Implemente os testes
-4. Submeta um Pull Request
+### 1. Fork e Clone
+```bash
+git clone https://github.com/seu-usuario/QuisoObs.git
+cd QuisoObs
+```
+
+### 2. Crie uma Branch
+```bash
+git checkout -b feature/minha-feature
+```
+
+### 3. Desenvolva e Teste
+- Escreva código seguindo os padrões do projeto (C# 12, primary constructors, collection expressions)
+- Adicione testes se aplicável
+- Mantenha a documentação atualizada
+
+### 4. Commit e Push
+```bash
+git add .
+git commit -m "feat: adiciona nova funcionalidade X"
+git push origin feature/minha-feature
+```
+
+### 5. Abra um Pull Request
+- Descreva as mudanças detalhadamente
+- Referencie issues relacionadas
+- Aguarde review do time
+
+### Padrões de Código
+
+- ✅ Use **Primary Constructors** quando apropriado
+- ✅ Prefira **Collection Expressions** (`[]`) sobre construtores explícitos
+- ✅ Use `ArgumentNullException.ThrowIfNull` para validações
+- ✅ Mantenha métodos pequenos e com responsabilidade única
+- ✅ Adicione comentários XML para APIs públicas
+- ✅ Siga as convenções de nomenclatura C#
+
+### Tipos de Contribuição
+
+- 🐛 **Bug Fixes**: Correções de bugs
+- ✨ **Features**: Novas funcionalidades
+- 📝 **Documentação**: Melhorias na documentação
+- ♻️ **Refatoração**: Melhorias de código
+- ⚡ **Performance**: Otimizações
+- ✅ **Testes**: Adição ou melhoria de testes
 
 ## 📄 Licença
 
-© QuisoLab 2026 - Uso interno da organização.
+© QuisoLab 2026 - Todos os direitos reservados.
+
+## 📞 Contato e Suporte
+
+- **Repositório**: https://github.com/quiso-lab/QuisoObs
+- **Issues**: https://github.com/quiso-lab/QuisoObs/issues
+- **Organização**: https://github.com/quiso-lab
+
+## 🔗 Links Úteis
+
+- [Elastic APM .NET Agent Documentation](https://www.elastic.co/guide/en/apm/agent/dotnet/current/index.html)
+- [Elastic APM Server](https://www.elastic.co/guide/en/apm/server/current/index.html)
+- [C# 12 Features](https://learn.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-12)
+
+---
+
+**QuisoLab.Observability.Elastic** - Observabilidade simplificada para aplicações .NET 🚀
