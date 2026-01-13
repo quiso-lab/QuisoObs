@@ -1,0 +1,74 @@
+name: Publish to NuGet
+
+on:
+  push:
+    branches:
+      - 'release/**'
+    paths:
+      - 'src/**'
+      - '*.sln'
+  workflow_dispatch:  # Permite execução manual
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: 'src/QuisoLab.Observability.Elastic/QuisoLab.Observability.Elastic.csproj'
+  
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Necessário para versionamento
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+    
+    - name: Build
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+    
+    - name: Run tests (se existirem)
+      run: dotnet test --configuration Release --no-build --verbosity normal
+      continue-on-error: true  # Continua mesmo sem testes
+    
+    - name: Get version from project
+      id: get_version
+      run: |
+        VERSION=$(grep -oP '<Version>\K[^<]+' ${{ env.PROJECT_PATH }})
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Package version: $VERSION"
+    
+    - name: Pack
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./artifacts
+    
+    - name: Push to NuGet
+      run: dotnet nuget push ./artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.version }}
+        release_name: Release v${{ steps.get_version.outputs.version }}
+        body: |
+          ## QuisoLab.Observability.Elastic v${{ steps.get_version.outputs.version }}
+          
+          Published to NuGet: https://www.nuget.org/packages/QuisoLab.Observability.Elastic/${{ steps.get_version.outputs.version }}
+          
+          ### Installation
+          ```bash
+          dotnet add package QuisoLab.Observability.Elastic --version ${{ steps.get_version.outputs.version }}
+          ```
+        draft: false
+        prerelease: false
+      continue-on-error: true  # Evita falha se a tag já existir

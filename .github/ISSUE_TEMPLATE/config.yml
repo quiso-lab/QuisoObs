@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/quiso-lab/QuisoObs/discussions
+    about: Para discussões gerais, ideias e perguntas da comunidade
+  - name: 📖 Documentação
+    url: https://github.com/quiso-lab/QuisoObs#readme
+    about: Consulte a documentação antes de abrir uma issue
+  - name: 🔗 NuGet Package
+    url: https://www.nuget.org/packages/QuisoLab.Observability.Elastic
+    about: Página oficial do pacote no NuGet

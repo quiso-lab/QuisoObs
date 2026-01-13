@@ -1,5 +1,12 @@
 # QuisoLab.Observability.Elastic
 
+[![Build Status](https://github.com/quiso-lab/QuisoObs/actions/workflows/build.yml/badge.svg)](https://github.com/quiso-lab/QuisoObs/actions/workflows/build.yml)
+[![Publish to NuGet](https://github.com/quiso-lab/QuisoObs/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/quiso-lab/QuisoObs/actions/workflows/publish-nuget.yml)
+[![NuGet](https://img.shields.io/nuget/v/QuisoLab.Observability.Elastic.svg)](https://www.nuget.org/packages/QuisoLab.Observability.Elastic/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Code of Conduct](https://img.shields.io/badge/code%20of-conduct-ff69b4.svg)](CODE_OF_CONDUCT.md)
+
 Biblioteca .NET para integração simplificada com Elastic APM, fornecendo observabilidade completa para aplicações ASP.NET Core com captura automática de transações, spans, exceções e contexto distribuído.
 
 ## 📖 Sobre o Projeto
@@ -290,35 +297,59 @@ git push origin feature/minha-feature
 ### 5. Abra um Pull Request
 - Descreva as mudanças detalhadamente
 - Referencie issues relacionadas
+## 🤝 Como Contribuir
+
+Contribuições são bem-vindas! Siga estas etapas:
+
+### 1. Fork e Clone
+```bash
+git clone https://github.com/seu-usuario/QuisoObs.git
+cd QuisoObs
+```
+
+### 2. Crie uma Branch
+```bash
+git checkout -b feature/minha-feature
+```
+
+### 3. Desenvolva e Teste
+- Escreva código seguindo os padrões do projeto (C# 12, primary constructors, collection expressions)
+- Adicione testes se aplicável
+- Mantenha a documentação atualizada
+
+### 4. Commit e Push
+```bash
+git add .
+git commit -m "feat: adiciona nova funcionalidade X"
+git push origin feature/minha-feature
+```
+
+### 5. Abra um Pull Request
+- Descreva as mudanças detalhadamente
+- Referencie issues relacionadas
 - Aguarde review do time
 
-### Padrões de Código
+### 📚 Documentação Completa
 
-- ✅ Use **Primary Constructors** quando apropriado
-- ✅ Prefira **Collection Expressions** (`[]`) sobre construtores explícitos
-- ✅ Use `ArgumentNullException.ThrowIfNull` para validações
-- ✅ Mantenha métodos pequenos e com responsabilidade única
-- ✅ Adicione comentários XML para APIs públicas
-- ✅ Siga as convenções de nomenclatura C#
-
-### Tipos de Contribuição
-
-- 🐛 **Bug Fixes**: Correções de bugs
-- ✨ **Features**: Novas funcionalidades
-- 📝 **Documentação**: Melhorias na documentação
-- ♻️ **Refatoração**: Melhorias de código
-- ⚡ **Performance**: Otimizações
-- ✅ **Testes**: Adição ou melhoria de testes
+Para mais detalhes sobre como contribuir, consulte:
+- 📖 [CONTRIBUTING.md](CONTRIBUTING.md) - Guia completo de contribuição
+- 🤝 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Código de conduta da comunidade
+- 🐛 [Bug Report Template](.github/ISSUE_TEMPLATE/bug_report.md)
+- ✨ [Feature Request Template](.github/ISSUE_TEMPLATE/feature_request.md)
 
 ## 📄 Licença
 
-© QuisoLab 2026 - Todos os direitos reservados.
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
+
+© QuisoLab 2026
 
 ## 📞 Contato e Suporte
 
-- **Repositório**: https://github.com/quiso-lab/QuisoObs
-- **Issues**: https://github.com/quiso-lab/QuisoObs/issues
-- **Organização**: https://github.com/quiso-lab
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/quiso-lab/QuisoObs/discussions)
+- 🐛 **Issues**: [Reportar Bug](https://github.com/quiso-lab/QuisoObs/issues/new?template=bug_report.md)
+- ✨ **Feature Requests**: [Sugerir Feature](https://github.com/quiso-lab/QuisoObs/issues/new?template=feature_request.md)
+- 📦 **NuGet**: [QuisoLab.Observability.Elastic](https://www.nuget.org/packages/QuisoLab.Observability.Elastic/)
+- 🏢 **Organização**: [QuisoLab](https://github.com/quiso-lab)
 
 ## 🔗 Links Úteis
 

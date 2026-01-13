@@ -6,22 +6,34 @@
         <Nullable>disable</Nullable>
 
         <!-- Pacote NuGet -->
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <Version>1.0.0</Version>
         <PackageId>QuisoLab.Observability.Elastic</PackageId>
-        <Title>QuisoLab.Observability.Elastic</Title>
+        <Title>QuisoLab Observability - Elastic APM</Title>
         <Authors>inocencio.cardoso</Authors>
         <Company>QuisoLab</Company>
-        <Description>Biblioteca de observabilidade para integração com Elastic APM em APIs e serviços</Description>
-        <PackageTags>Elastic;APM;Observability;Tracing;QuisoLab;Monitoring</PackageTags>
-        <RepositoryUrl>https://github.com/QuisoLab/QuisoLab.Observability.Elastic</RepositoryUrl>
+        <Product>QuisoLab.Observability.Elastic</Product>
+        <Description>Biblioteca .NET para integração simplificada com Elastic APM. Fornece observabilidade completa para aplicações ASP.NET Core com captura automática de transações, spans, exceções e contexto distribuído.</Description>
+        <PackageTags>Elastic;APM;Observability;Tracing;Monitoring;ASP.NET;Distributed-Tracing;Telemetry;Performance</PackageTags>
+        <PackageProjectUrl>https://github.com/quiso-lab/QuisoObs</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/quiso-lab/QuisoObs</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <Copyright>© QuisoLab 2026</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Copyright>© QuisoLab 2026. All rights reserved.</Copyright>
+        <PackageReleaseNotes>Initial release with automatic HTTP transaction capture, manual transaction support, and entity-to-label conversion extensions.</PackageReleaseNotes>
 
-        <!-- Para build e empacotamento internos -->
+        <!-- Símbolos para debugging -->
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.32.2" />
